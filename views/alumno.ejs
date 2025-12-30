@@ -4,26 +4,97 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Sistema de Laboratorio - Registro</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="/Style1.css">
+
+    <!-- ICONOS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet" href="Style1.css">
+
+    <style>
+        /* ===== MENÚ DEL ENGRANE ===== */
+        .icon-group {
+            position: relative;
+        }
+
+        #cogButton {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 35px;
+            background: #fff;
+            min-width: 220px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,.15);
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .dropdown-content button,
+        .dropdown-content a {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            background: none;
+            text-align: left;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .dropdown-content button:hover,
+        .dropdown-content a:hover {
+            background: #f1f1f1;
+        }
+
+        .dropdown-content hr {
+            margin: 0;
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+
+        .logout {
+            color: #d00000;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
 <div class="student-form-wrapper">
     <div class="dashboard-header">
         <h2>Registro de Acceso</h2>
+
+        <!-- ⚙️ ENGRANE -->
         <div class="icon-group">
-            <div id="settingsDropdown" class="dropdown-menu">
-                <button id="cogButton"><i class="fas fa-cog"></i></button>
-                <div class="dropdown-content">
-                    <button onclick="reportProblem()">Reportar Problema</button>
-                    <button onclick="checkSystemStatus()">Estado del Sistema</button>
-                </div>
+            <button id="cogButton">
+                <i class="fas fa-cog"></i>
+            </button>
+
+            <div class="dropdown-content" id="settingsMenu">
+                <button onclick="reportProblem()">
+                    ⚠️ Reportar Problema
+                </button>
+
+                <button onclick="checkSystemStatus()">
+                    🛠 Estado del Sistema
+                </button>
+
+                <hr>
+
+                <a href="/auth/logout" class="logout">
+                    🚪 Cerrar Sesión
+                </a>
             </div>
         </div>
     </div>
 
-    <!-- EJS: action y method -->
+    <!-- FORMULARIO -->
     <form id="studentForm" method="POST" action="/alumno/registrar">
         <h3 class="section-title">1. Verificación</h3>
 
@@ -37,19 +108,19 @@
             Seleccione sus datos para verificar acceso.
         </div>
 
-        <h3 class="section-title" id="machineTitle" style="display:none;">2. Datos de Bitácora</h3>
+        <h3 class="section-title" id="machineTitle" style="display:none;">
+            2. Datos de Bitácora
+        </h3>
 
         <div id="registrationContent" class="registration-content">
             <div class="panel">
                 <h4>Detalles del Usuario</h4>
 
                 <label>Nombre Completo</label>
-                <!-- EJS -->
-                <input type="text" id="studentName" name="studentName" readonly value="<%= user.nombre %>" />
+                <input type="text" readonly value="<%= user.nombre %>">
 
                 <label>Matrícula / ID</label>
-                <!-- EJS -->
-                <input type="text" id="studentId" name="studentId" readonly value="<%= user.email %>" />
+                <input type="text" readonly value="<%= user.email %>">
 
                 <label for="machineNumber">Número de Equipo</label>
                 <select id="machineNumber" name="machineNumber" required></select>
@@ -67,27 +138,38 @@
         </div>
 
         <div class="btn-group">
-            <button type="submit" id="registerButton" disabled>REGISTRAR ENTRADA</button>
-            <button type="button" class="btn-update" onclick="checkAccess()">Actualizar</button>
+            <button type="submit" id="registerButton" disabled>
+                REGISTRAR ENTRADA
+            </button>
+            <button type="button" class="btn-update" onclick="checkAccess()">
+                Actualizar
+            </button>
         </div>
-
-        <button type="button" id="logoutButton" onclick="logout()">Cerrar Sesión</button>
     </form>
 </div>
 
 <script>
-    // TODO TU JS ORIGINAL (SIN BORRAR NADA)
+    /* ===== ABRIR / CERRAR MENÚ ===== */
+    const cogButton = document.getElementById("cogButton");
+    const menu = document.getElementById("settingsMenu");
 
-    function logout() {
-        if (confirm("¿Cerrar sesión?")) {
-            window.location.href = "/auth/logout";
-        }
+    cogButton.addEventListener("click", (e) => {
+        e.stopPropagation();
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", () => {
+        menu.style.display = "none";
+    });
+
+    /* ===== ACCIONES ===== */
+    function reportProblem() {
+        window.location.href = "/reportar-problema";
     }
 
-    document.getElementById('studentForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        document.getElementById("studentForm").submit();
-    });
+    function checkSystemStatus() {
+        window.location.href = "/estado-sistema";
+    }
 </script>
 
 </body>
