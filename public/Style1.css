@@ -111,4 +111,76 @@ table td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
     .registration-content { flex-direction: column; }
     .form-container { width: 100%; }
     .overlay-container { display: none; }
+/* =========================
+   ENGANE / MENU DESPLEGABLE
+========================= */
+
+.icon-group {
+    position: relative;
+}
+
+/* Botón del engrane */
+#cogButton {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: var(--teschi-blue);
+    padding: 5px;
+}
+
+#cogButton:hover {
+    transform: rotate(90deg);
+    transition: 0.3s;
+}
+
+/* Menú desplegable */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 35px;
+    background: white;
+    min-width: 220px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    z-index: 9999;
+    overflow: hidden;
+}
+
+/* Botones del menú */
+.dropdown-content button,
+.dropdown-content a {
+    width: 100%;
+    padding: 12px 15px;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dropdown-content button:hover,
+.dropdown-content a:hover {
+    background: #f5f7fa;
+    color: var(--teschi-blue);
+}
+
+/* Línea divisoria */
+.dropdown-content hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 5px 0;
+}
+
+/* Logout */
+.dropdown-content .logout {
+    color: #d9534f;
+    font-weight: 600;
+}
+
 }
