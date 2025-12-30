@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Laboratorio - Registro</title>
 
     <!-- ICONOS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <link rel="stylesheet" href="Style1.css">
+    <!-- CSS PRINCIPAL -->
+    <link rel="stylesheet" href="/Style1.css">
 
+    <!-- ESTILOS DEL ENGRANE -->
     <style>
-        /* ===== MENÚ DEL ENGRANE ===== */
         .icon-group {
             position: relative;
         }
@@ -21,18 +22,24 @@
             border: none;
             font-size: 22px;
             cursor: pointer;
+            color: var(--teschi-blue);
+        }
+
+        #cogButton:hover {
+            transform: rotate(90deg);
+            transition: 0.3s;
         }
 
         .dropdown-content {
             display: none;
             position: absolute;
             right: 0;
-            top: 35px;
-            background: #fff;
+            top: 40px;
+            background: #ffffff;
             min-width: 220px;
-            border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(0,0,0,.15);
-            z-index: 100;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            z-index: 9999;
             overflow: hidden;
         }
 
@@ -45,43 +52,51 @@
             text-align: left;
             cursor: pointer;
             font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #333;
         }
 
         .dropdown-content button:hover,
         .dropdown-content a:hover {
-            background: #f1f1f1;
+            background: #f5f7fa;
+            color: var(--teschi-blue);
         }
 
         .dropdown-content hr {
             margin: 0;
             border: none;
-            border-top: 1px solid #ddd;
+            border-top: 1px solid #e0e0e0;
         }
 
         .logout {
             color: #d00000;
-            font-weight: bold;
+            font-weight: 600;
         }
     </style>
 </head>
+
 <body>
 
 <div class="student-form-wrapper">
+
+    <!-- HEADER -->
     <div class="dashboard-header">
         <h2>Registro de Acceso</h2>
 
         <!-- ⚙️ ENGRANE -->
         <div class="icon-group">
-            <button id="cogButton">
+            <button id="cogButton" type="button" aria-label="Opciones">
                 <i class="fas fa-cog"></i>
             </button>
 
             <div class="dropdown-content" id="settingsMenu">
-                <button onclick="reportProblem()">
+                <button type="button" onclick="reportProblem()">
                     ⚠️ Reportar Problema
                 </button>
 
-                <button onclick="checkSystemStatus()">
+                <button type="button" onclick="checkSystemStatus()">
                     🛠 Estado del Sistema
                 </button>
 
@@ -96,6 +111,7 @@
 
     <!-- FORMULARIO -->
     <form id="studentForm" method="POST" action="/alumno/registrar">
+
         <h3 class="section-title">1. Verificación</h3>
 
         <label for="studentCareer">Carrera</label>
@@ -113,6 +129,7 @@
         </h3>
 
         <div id="registrationContent" class="registration-content">
+
             <div class="panel">
                 <h4>Detalles del Usuario</h4>
 
@@ -135,21 +152,24 @@
                 <div class="info-box">Docente: <strong id="infoTeacher">---</strong></div>
                 <div class="info-box">Grupo: <strong id="infoGroup">---</strong></div>
             </div>
+
         </div>
 
         <div class="btn-group">
             <button type="submit" id="registerButton" disabled>
                 REGISTRAR ENTRADA
             </button>
+
             <button type="button" class="btn-update" onclick="checkAccess()">
                 Actualizar
             </button>
         </div>
+
     </form>
 </div>
 
+<!-- JS -->
 <script>
-    /* ===== ABRIR / CERRAR MENÚ ===== */
     const cogButton = document.getElementById("cogButton");
     const menu = document.getElementById("settingsMenu");
 
@@ -162,7 +182,6 @@
         menu.style.display = "none";
     });
 
-    /* ===== ACCIONES ===== */
     function reportProblem() {
         window.location.href = "/reportar-problema";
     }
