@@ -2,18 +2,15 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const router = express.Router();
 
+/* =========================
+   LOGOUT
+========================= */
 router.get('/logout', (req, res) => {
-  req.session.destroy(err => {
-    if (err) {
-      console.error('Error al cerrar sesión:', err);
-      return res.redirect('/');
-    }
-
+  req.session.destroy(() => {
     res.clearCookie('connect.sid');
     res.redirect('/');
   });
 });
-
 
 /* =========================
    LISTAS BLANCAS
@@ -44,28 +41,52 @@ function detectarRol(email) {
 
   if (/^[0-9]{10}@teschi\.edu\.mx$/.test(email)) return 'ALUMNO';
   if (/^[a-z]+@teschi\.edu\.mx$/.test(email)) return 'DOCENTE';
-  if (/^[a-z0-9]+@teschi\.edu\.mx$/.test(email)) return 'PERSONAL';
+  if (/^[a-z0-9._]+@teschi\.edu\.mx$/.test(email)) return 'PERSONAL';
 
   return null;
 }
 
 /* =========================
+   VALIDACIÓN CONTRASEÑA
+========================= */
+const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/;
+
+/* =========================
    REGISTRO
 ========================= */
 router.post('/register', async (req, res) => {
+  const { nombre, email, password } = req.body;
+  const db = req.db;
+
+  if (!nombre || !email || !password) {
+    return res.send(`
+      <script>
+        alert('Todos los campos son obligatorios');
+        window.location = '/';
+      </script>
+    `);
+  }
+
+  const rol = detectarRol(email);
+  if (!rol) {
+    return res.send(`
+      <script>
+        alert('Correo institucional no autorizado');
+        window.location = '/';
+      </script>
+    `);
+  }
+
+  if (!PASSWORD_REGEX.test(password)) {
+    return res.send(`
+      <script>
+        alert('La contraseña debe tener mínimo 6 caracteres, una mayúscula, un número y un símbolo');
+        window.location = '/';
+      </script>
+    `);
+  }
+
   try {
-    const { nombre, email, password } = req.body;
-    const db = req.db;
-
-    if (!nombre || !email || !password) {
-      return res.status(400).json({ message: 'Faltan datos' });
-    }
-
-    const rol = detectarRol(email);
-    if (!rol) {
-      return res.status(403).json({ message: 'Correo no autorizado' });
-    }
-
     const hash = await bcrypt.hash(password, 10);
 
     db.query(
@@ -73,16 +94,40 @@ router.post('/register', async (req, res) => {
       [nombre, email, rol, hash],
       err => {
         if (err) {
+          if (err.code === 'ER_DUP_ENTRY') {
+            return res.send(`
+              <script>
+                alert('Este correo ya está registrado');
+                window.location = '/';
+              </script>
+            `);
+          }
+
           console.error(err);
-          return res.status(500).json({ message: 'Error al registrar' });
+          return res.send(`
+            <script>
+              alert('Error al registrar usuario');
+              window.location = '/';
+            </script>
+          `);
         }
 
-        res.json({ message: 'Registro exitoso' });
+        res.send(`
+          <script>
+            alert('Registro exitoso. Ahora inicia sesión');
+            window.location = '/';
+          </script>
+        `);
       }
     );
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Error servidor' });
+    res.send(`
+      <script>
+        alert('Error del servidor');
+        window.location = '/';
+      </script>
+    `);
   }
 });
 
@@ -97,26 +142,41 @@ router.post('/login', (req, res) => {
     'SELECT * FROM usuarios WHERE email = ?',
     [email],
     async (err, results) => {
-      if (err) return res.status(500).json({ message: 'Error servidor' });
-
-      if (results.length === 0) {
-        return res.status(401).json({ message: 'Credenciales incorrectas' });
+      if (err || results.length === 0) {
+        return res.send(`
+          <script>
+            alert('Credenciales incorrectas');
+            window.location = '/';
+          </script>
+        `);
       }
 
       const user = results[0];
       const ok = await bcrypt.compare(password, user.password);
 
       if (!ok) {
-        return res.status(401).json({ message: 'Credenciales incorrectas' });
+        return res.send(`
+          <script>
+            alert('Credenciales incorrectas');
+            window.location = '/';
+          </script>
+        `);
       }
 
       req.session.user = {
         id: user.id,
         nombre: user.nombre,
+        email: user.email,
         rol: user.rol
       };
 
-      res.json({ rol: user.rol });
+      // Redirección por rol
+      if (user.rol === 'ALUMNO') return res.redirect('/alumno');
+      if (user.rol === 'DOCENTE') return res.redirect('/docente');
+      if (user.rol === 'PERSONAL') return res.redirect('/personal');
+      if (user.rol === 'TECNICO') return res.redirect('/mantenimiento');
+
+      res.redirect('/');
     }
   );
 });
