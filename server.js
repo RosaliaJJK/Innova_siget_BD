@@ -2,6 +2,8 @@ const express = require('express');
 const mysql = require('mysql2');
 const session = require('express-session');
 const path = require('path');
+const http = require('http');              // 👈 NUEVO
+const { Server } = require('socket.io');   // 👈 NUEVO
 
 const app = express();
 
@@ -65,8 +67,24 @@ app.get('/', (req, res) => {
 });
 
 /* =========================
+   SOCKET.IO (TIEMPO REAL)
+========================= */
+const server = http.createServer(app);
+const io = new Server(server);
+
+app.set("io", io); // 👈 PERMITE USAR io EN RUTAS
+
+io.on("connection", (socket) => {
+  console.log("🟢 Usuario conectado al tiempo real");
+
+  socket.on("disconnect", () => {
+    console.log("🔴 Usuario desconectado");
+  });
+});
+
+/* =========================
    SERVIDOR
 ========================= */
-app.listen(3000, () => {
-  console.log('🚀 http://localhost:3000');
+server.listen(3000, () => {
+  console.log('🚀 http://localhost:3000 (Tiempo real activo)');
 });
