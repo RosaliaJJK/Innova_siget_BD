@@ -4,27 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Control de Laboratorio - Panel Docente</title>
+
+    <!-- ICONOS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <style>
-        /* ESTILOS BASE */
+        /* =======================
+           ESTILOS BASE
+        ======================== */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
         body { background: #f4f7f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .dashboard-card { background: #ffffff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); width: 100%; max-width: 1150px; padding: 35px; position: relative; }
-        
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid #edf2f7; padding-bottom: 15px; }
-        .header h2 { color: #1a365d; font-size: 22px; font-weight: 700; }
-        .header-actions { display: flex; align-items: center; gap: 15px; }
 
-        /* ⚙️ BOTONES DE CABECERA */
-        .icon-group { position: relative; }
-        #cogButton, .btn-soporte {
-            background: none; border: none; color: #3182ce; font-size: 22px; cursor: pointer; transition: all 0.3s ease;
-            display: flex; align-items: center; justify-content: center;
+        .dashboard-card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 1150px;
+            padding: 35px;
+            position: relative;
         }
+
+        /* =======================
+           HEADER
+        ======================== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #edf2f7;
+            padding-bottom: 15px;
+        }
+
+        .header h2 {
+            color: #1a365d;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* =======================
+           ICONOS HEADER
+        ======================== */
+        .icon-group { position: relative; }
+
+        #cogButton, .btn-soporte {
+            background: none;
+            border: none;
+            color: #3182ce;
+            font-size: 22px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
         #cogButton:hover { transform: rotate(90deg); color: #2c5282; }
         .btn-soporte:hover { transform: scale(1.2); color: #2c5282; }
 
-        /* 📂 MENU DESPLEGABLE */
+        /* =======================
+           MENU DESPLEGABLE
+        ======================== */
         .dropdown-content {
             display: none;
             position: absolute;
@@ -53,180 +97,304 @@
             gap: 12px;
             color: #334155;
             text-decoration: none;
-            font-weight: 700; /* Negrita para las opciones superiores */
-            border-radius: 12px; /* Redondeo suave de la sombra gris */
+            font-weight: 700;
+            border-radius: 12px;
             transition: background 0.2s ease, transform 0.2s ease;
         }
 
-        /* ✨ HOVER OPCIONES SUPERIORES (Gris redondeado) */
-        .dropdown-content button:hover { 
-            background: #f1f5f9; 
+        .dropdown-content button:hover {
+            background: #f1f5f9;
             transform: scale(1.02);
             color: #1a365d;
         }
 
-        /* ❌ CERRAR SESIÓN (Estilo según imagen) */
-        .logout { 
-            color: #000000 !important; /* Texto Negro */
-            font-weight: 400 !important; /* Menos grueso, tal cual la imagen */
-            margin-top: 2px;
+        .logout {
+            color: #000 !important;
+            font-weight: 400 !important;
         }
-        .logout span { 
-            text-decoration: underline; /* Subrayado del texto */
+
+        .logout span { text-decoration: underline; }
+        .logout i { color: #dc2626; }
+
+        .dropdown-content hr {
+            margin: 6px 0;
+            border: none;
+            border-top: 1px solid #eee;
         }
-        .logout i { 
-            color: #dc2626; /* Mantiene el icono rojo de salida */
+
+        /* =======================
+           CONTENIDO
+        ======================== */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.4fr;
+            gap: 40px;
+        }
+
+        .section-title {
+            color: #2d3748;
             font-size: 16px;
-        }
-        .logout:hover { 
-            background: #f1f5f9 !important; /* Mismo gris que arriba */
-            transform: none !important; /* Sin efecto de escala para cerrar sesión */
+            font-weight: 700;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #20c997;
+            padding-bottom: 8px;
         }
 
-        .dropdown-content hr { margin: 6px 0; border: none; border-top: 1px solid #eee; }
-
-        /* RESTO DEL DISEÑO */
-        .main-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 40px; }
-        .section-title { color: #2d3748; font-size: 16px; font-weight: 700; margin-bottom: 20px; border-bottom: 2px solid #20c997; padding-bottom: 8px; }
         .form-group { margin-bottom: 18px; }
-        label { display: block; font-size: 13px; font-weight: 600; color: #718096; margin-bottom: 8px; }
-        .docente-badge { color: #3182ce; font-weight: 700; font-size: 15px; margin-bottom: 15px; display: block; }
-        input, select { width: 100%; padding: 11px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; background: #fcfcfc; outline: none; }
-        .btn-primary { background: #20c997; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 62%; transition: 0.3s; }
-        .btn-save { background: white; color: #3182ce; border: 1px solid #3182ce; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 35%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-        .table-container { background: #fff; border: 1px solid #edf2f7; border-radius: 8px; overflow: hidden; min-height: 400px; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { background: #f8fafc; padding: 15px 12px; text-align: left; color: #64748b; border-bottom: 1px solid #edf2f7; }
-        td { padding: 15px 12px; border-bottom: 1px solid #f1f5f9; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: #48bb78; display: inline-block; margin-right: 5px; }
 
-        @media (max-width: 950px) { .main-grid { grid-template-columns: 1fr; } }
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #718096;
+            margin-bottom: 8px;
+        }
+
+        .docente-badge {
+            color: #3182ce;
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #fcfcfc;
+        }
+
+        .btn-primary {
+            background: #20c997;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 62%;
+        }
+
+        .btn-save {
+            background: white;
+            color: #3182ce;
+            border: 1px solid #3182ce;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 35%;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* =======================
+           TABLA
+        ======================== */
+        .table-container {
+            background: #fff;
+            border: 1px solid #edf2f7;
+            border-radius: 8px;
+            overflow: hidden;
+            min-height: 400px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 15px 12px;
+            text-align: left;
+            color: #64748b;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #48bb78;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        @media (max-width: 950px) {
+            .main-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
+
 <body>
 
-    <div class="dashboard-card">
-        <header class="header">
-            <h2>Control de Laboratorio - Edificio J</h2>
-            
-            <div class="header-actions">
-                <button class="btn-soporte" title="Soporte" onclick="location.href='/personal'">
-                    <i class="fas fa-headset"></i>
+<div class="dashboard-card">
+
+    <!-- HEADER -->
+    <header class="header">
+        <h2>Control de Laboratorio - Edificio J</h2>
+
+        <div class="header-actions">
+            <button class="btn-soporte" onclick="location.href='/personal'">
+                <i class="fas fa-headset"></i>
+            </button>
+
+            <div class="icon-group">
+                <button id="cogButton">
+                    <i class="fa-solid fa-gear"></i>
                 </button>
 
-                <div class="icon-group">
-                    <button id="cogButton" type="button" aria-label="Opciones">
-                        <i class="fa-solid fa-gear"></i>
+                <div class="dropdown-content" id="settingsMenu">
+                    <button onclick="reportProblem()">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span>Reportar Problema</span>
                     </button>
 
-                    <div class="dropdown-content" id="settingsMenu">
-                        <button type="button" onclick="reportProblem()">
-                            <i class="fa-solid fa-triangle-exclamation"></i>
-                            <span>Reportar Problema</span>
-                        </button>
+                    <button onclick="checkSystemStatus()">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>Estado del Sistema</span>
+                    </button>
 
-                        <button type="button" onclick="checkSystemStatus()">
-                            <i class="fa-solid fa-circle-info"></i>
-                            <span>Estado del Sistema</span>
-                        </button>
+                    <hr>
 
-                        <hr>
-
-                        <a href="/auth/logout" class="logout">
-                            <i class="fa-solid fa-right-from-bracket"></i>
-                            <span>Cerrar Sesión</span>
-                        </a>
-                    </div>
+                    <a href="/auth/logout" class="logout">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Cerrar Sesión</span>
+                    </a>
                 </div>
             </div>
-        </header>
-
-        <div class="main-grid">
-            <section class="config-panel">
-                <h3 class="section-title">1. Configuración del Acceso</h3>
-                <form action="/docente/abrir-clase" method="POST">
-                    <div class="form-group">
-                        <label>Docente Responsable</label>
-                        <span class="docente-badge"><%= user.nombre %></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Carrera</label>
-                        <select name="carrera" required>
-                            <option value="" disabled selected>Seleccione carrera...</option>
-                            <option value="ISC">Ingeniería en Sistemas Computacionales</option>
-                            <option value="IADEV">Ingeniería en Animación Digital</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Laboratorio</label>
-                        <select name="laboratorio" required>
-                            <option value="" disabled selected>Seleccione laboratorio...</option>
-                            <option value="Database">Laboratorio Database</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Horario</label>
-                        <div style="display: flex; gap:10px;">
-                            <input type="time" name="hora_inicio" required>
-                            <input type="time" name="hora_fin" required>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; justify-content: space-between; margin-top: 25px;">
-                        <button type="submit" class="btn-primary">HABILITAR ACCESO</button>
-                        <button type="button" class="btn-save" onclick="alert('Borrador guardado')"><i class="fas fa-save"></i> Borrador</button>
-                    </div>
-                </form>
-            </section>
-
-            <section class="monitoring-panel">
-                <h3 class="section-title">
-                    2. Monitoreo en Tiempo Real 
-                    <span style="font-size:12px; font-weight:normal; color:#718096; float:right;">
-                        <span class="dot"></span> Activo
-                    </span>
-                </h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Alumno</th>
-                                <th>Máquina</th>
-                                <th>Estado</th>
-                                <th>Observación</th>
-                            </tr>
-                        </thead>
-                        <tbody id="studentRealtime">
-                            <tr>
-                                <td colspan="4" style="text-align:center; color:#a0aec0; padding-top:100px;">
-                                    Cargando registros...
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
         </div>
+    </header>
+
+    <!-- CONTENIDO -->
+    <div class="main-grid">
+
+        <!-- CONFIG -->
+        <section>
+            <h3 class="section-title">1. Configuración del Acceso</h3>
+
+            <form action="/docente/abrir-clase" method="POST">
+                <label>Docente Responsable</label>
+                <span class="docente-badge"><%= user.nombre %></span>
+
+                <label>Carrera</label>
+                <select name="carrera" required>
+                    <option disabled selected>Seleccione carrera...</option>
+                    <option value="ISC">Ingeniería en Sistemas</option>
+                </select>
+
+                <label>Laboratorio</label>
+                <select name="laboratorio" required>
+                    <option disabled selected>Seleccione laboratorio...</option>
+                    <option value="Database">Laboratorio Database</option>
+                </select>
+
+                <label>Horario</label>
+                <div style="display:flex; gap:10px;">
+                    <input type="time" name="hora_inicio" required>
+                    <input type="time" name="hora_fin" required>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; margin-top:25px;">
+                    <button class="btn-primary">HABILITAR ACCESO</button>
+                    <button type="button" class="btn-save">
+                        <i class="fas fa-save"></i> Borrador
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- MONITOREO -->
+        <section>
+            <h3 class="section-title">
+                2. Monitoreo en Tiempo Real
+                <span style="float:right; font-size:12px;">
+                    <span class="dot"></span> Activo
+                </span>
+            </h3>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Alumno</th>
+                            <th>Máquina</th>
+                            <th>Estado</th>
+                            <th>Observación</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentRealtime">
+                        <tr>
+                            <td colspan="4" style="text-align:center; color:#a0aec0; padding-top:100px;">
+                                Esperando alumnos...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
     </div>
+</div>
 
-    <script>
-        const cogButton = document.getElementById("cogButton");
-        const menu = document.getElementById("settingsMenu");
+<!-- SOCKET.IO -->
+<script src="/socket.io/socket.io.js"></script>
 
-        cogButton.addEventListener("click", (e) => {
-            e.stopPropagation();
-            menu.style.display = menu.style.display === "block" ? "none" : "block";
-        });
+<script>
+    /* ===== MENU ===== */
+    const cogButton = document.getElementById("cogButton");
+    const menu = document.getElementById("settingsMenu");
 
-        document.addEventListener("click", () => {
-            menu.style.display = "none";
-        });
+    cogButton.onclick = (e) => {
+        e.stopPropagation();
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+    };
 
-        function reportProblem() { window.location.href = "/reportar-problema"; }
-        function checkSystemStatus() { window.location.href = "/estado-sistema"; }
-    </script>
+    document.onclick = () => menu.style.display = "none";
+
+    function reportProblem() { location.href = "/reportar-problema"; }
+    function checkSystemStatus() { location.href = "/estado-sistema"; }
+
+    /* ===== 🔴 TIEMPO REAL (Socket.IO) ===== */
+    const socket = io();
+
+    socket.on("alumnos_en_linea", (alumnos) => {
+        const tbody = document.getElementById("studentRealtime");
+
+        if (!alumnos.length) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align:center; color:#a0aec0; padding-top:100px;">
+                        Sin alumnos conectados
+                    </td>
+                </tr>`;
+            return;
+        }
+
+        tbody.innerHTML = alumnos.map(a => `
+            <tr>
+                <td><strong>${a.nombre}</strong></td>
+                <td>Máquina ${a.maquina}</td>
+                <td style="color:#48bb78;">
+                    <i class="fas fa-check-circle"></i> Activo
+                </td>
+                <td>${a.observacion || 'Sin observaciones'}</td>
+            </tr>
+        `).join("");
+    });
+</script>
+
 </body>
 </html>
