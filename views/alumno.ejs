@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Laboratorio - Registro</title>
 
-    <!-- ICONOS -->
+    <!-- FONT AWESOME -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <!-- CSS PRINCIPAL -->
@@ -36,8 +36,8 @@
             right: 0;
             top: 40px;
             background: #ffffff;
-            min-width: 220px;
-            border-radius: 10px;
+            min-width: 230px;
+            border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             z-index: 9999;
             overflow: hidden;
@@ -46,7 +46,7 @@
         .dropdown-content button,
         .dropdown-content a {
             width: 100%;
-            padding: 12px 15px;
+            padding: 13px 16px;
             border: none;
             background: none;
             text-align: left;
@@ -54,25 +54,35 @@
             font-size: 14px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            color: #333;
+            gap: 12px;
+            color: #1f2937;
+        }
+
+        .dropdown-content i {
+            width: 18px;
+            text-align: center;
+            font-size: 15px;
+            color: #1f2937;
         }
 
         .dropdown-content button:hover,
         .dropdown-content a:hover {
-            background: #f5f7fa;
-            color: var(--teschi-blue);
+            background: #f3f4f6;
         }
 
         .dropdown-content hr {
             margin: 0;
             border: none;
-            border-top: 1px solid #e0e0e0;
+            border-top: 1px solid #e5e7eb;
         }
 
         .logout {
-            color: #d00000;
-            font-weight: 600;
+            color: #dc2626;
+            font-weight: 500;
+        }
+
+        .logout i {
+            color: #dc2626;
         }
     </style>
 </head>
@@ -88,23 +98,28 @@
         <!-- ⚙️ ENGRANE -->
         <div class="icon-group">
             <button id="cogButton" type="button" aria-label="Opciones">
-                <i class="fas fa-cog"></i>
+                <i class="fa-solid fa-gear"></i>
             </button>
 
             <div class="dropdown-content" id="settingsMenu">
+
                 <button type="button" onclick="reportProblem()">
-                    ⚠️ Reportar Problema
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>Reportar Problema</span>
                 </button>
 
                 <button type="button" onclick="checkSystemStatus()">
-                    🛠 Estado del Sistema
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>Estado del Sistema</span>
                 </button>
 
                 <hr>
 
                 <a href="/auth/logout" class="logout">
-                    🚪 Cerrar Sesión
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Cerrar Sesión</span>
                 </a>
+
             </div>
         </div>
     </div>
